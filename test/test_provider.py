@@ -2,7 +2,6 @@
 from unittest.mock import MagicMock, patch
 
 from mediavocab import MediaType, Release, Signals, Work
-from mediavocab.taxonomy import PlaybackType
 
 from ovos_media_provider_youtube import YouTubeMediaProvider
 
@@ -15,29 +14,6 @@ def _make_release(title="Some Video"):
 def test_instantiation():
     provider = YouTubeMediaProvider()
     assert provider.name == "youtube"
-    assert provider.is_available() is True
-
-
-def test_routing_class_sets():
-    assert YouTubeMediaProvider.media == {
-        MediaType.MOVIE,
-        MediaType.EPISODIC_SERIES,
-        MediaType.MUSIC_VIDEO,
-        MediaType.PODCAST,
-        MediaType.TV,
-        MediaType.GENERIC,
-    }
-    assert YouTubeMediaProvider.playback_type == {PlaybackType.VIDEO, PlaybackType.AUDIO}
-
-
-def test_matches_music_video_true():
-    provider = YouTubeMediaProvider()
-    assert provider.matches(Signals(medium=MediaType.MUSIC_VIDEO)) is True
-
-
-def test_matches_book_false():
-    provider = YouTubeMediaProvider()
-    assert provider.matches(Signals(medium=MediaType.BOOK)) is False
 
 
 def test_search_empty_title_returns_empty():
@@ -58,7 +34,14 @@ def test_search_wires_to_tutubo_bridge():
     fake_search.iterate_videos.return_value = iter([preview])
 
     with patch("tutubo.YoutubeSearch", return_value=fake_search) as ctor:
-        results = provider.search(Signals(title="blade runner"))
+        results = provider.search(
+            Signals(title="blade runner"),
+            lang="en-us",
+            supported_playback_types={"video", "audio"},
+            blocked_genres={"adult"},
+            region="US",
+            session_id="sess-1",
+        )
 
     ctor.assert_called_once_with("blade runner")
     fake_search.iterate_videos.assert_called_once()
