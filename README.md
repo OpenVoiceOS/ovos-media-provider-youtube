@@ -1,14 +1,14 @@
 # ovos-media-provider-youtube
 
-OVOS **MediaProvider** plugin for YouTube. Replaces the deprecated OCP search
-skill [`ovos-skill-youtube`](https://github.com/OpenVoiceOS/ovos-skill-youtube).
+This plugin is an OVOS MediaProvider for YouTube. It replaces the deprecated
+OCP search skill [`ovos-skill-youtube`](https://github.com/OpenVoiceOS/ovos-skill-youtube).
 
-Instead of broadcasting `ovos.common_play.query` over the bus and waiting for
-skills to answer, the OCP pipeline loads MediaProvider plugins in-process, gates
-them by routing, and calls `search()` directly. This plugin wraps the
-[`tutubo`](https://github.com/TigreGotico/tutubo) YouTube client, whose search
-results already convert to [`mediavocab.Release`](https://github.com/TigreGotico/mediavocab)
-objects via its `mediavocab_bridge`.
+The OCP pipeline does not broadcast `ovos.common_play.query` over the bus and
+wait for skills to answer. Instead, it loads MediaProvider plugins in-process,
+gates them by routing, and calls `search()` directly. This plugin wraps the
+[`tutubo`](https://github.com/TigreGotico/tutubo) YouTube client. The client's
+search results already convert to [`mediavocab.Release`](https://github.com/TigreGotico/mediavocab)
+objects through its `mediavocab_bridge`.
 
 ## Install
 
@@ -36,6 +36,12 @@ youtube = "ovos_media_provider_youtube:YouTubeMediaProvider"
 | Key | Default | Description |
 |-----|---------|-------------|
 | `max_results` | `10` | Maximum number of results returned per search. |
+
+## Related projects
+
+- [`ovos-skill-youtube`](https://github.com/OpenVoiceOS/ovos-skill-youtube): the deprecated skill this plugin replaces.
+- [`tutubo`](https://github.com/TigreGotico/tutubo): the YouTube client this plugin wraps.
+- [`mediavocab`](https://github.com/TigreGotico/mediavocab): the shared media vocabulary this plugin's results use.
 
 ## License
 
